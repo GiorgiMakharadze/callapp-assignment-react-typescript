@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteData = exports.updateData = exports.getAllData = void 0;
 const fs_1 = __importDefault(require("fs"));
 const http_status_codes_1 = require("http-status-codes");
-const not_found_1 = __importDefault(require("../errors/not-found"));
+const errors_1 = require("../errors");
 const dataPath = "./callapp-data.json";
 let dataObject;
 fs_1.default.readFile(dataPath, (err, data) => {
@@ -28,13 +28,36 @@ fs_1.default.readFile(dataPath, (err, data) => {
 });
 const getAllData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!dataObject || dataObject.length <= 0) {
-        throw new not_found_1.default("Data doesn't exist");
+        throw new errors_1.NotFoundError("Data doesn't exist");
     }
     res.status(http_status_codes_1.StatusCodes.OK).json({ msg: "all data", dataObject });
 });
 exports.getAllData = getAllData;
 const updateData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("update data");
+    const id = parseInt(req.params.id, 10);
+    const updatedFields = req.body;
+    const index = dataObject.findIndex((item) => item.id === id);
+    if (index === -1) {
+        throw new errors_1.NotFoundError(`Data with ID ${id} not found`);
+    }
+    for (const key in updatedFields) {
+        if (key === "address" && !(updatedFields[key] instanceof Object)) {
+            throw new TypeError("Address field should be an object with 'street' and 'city' properties");
+        }
+        if (!(key in dataObject[index])) {
+            throw new errors_1.NotFoundError(`Field '${key}' does not exist in the object`);
+        }
+        if (updatedFields[key] === "") {
+            throw new errors_1.EmptyValueError(`Value for '${key}' cannot be empty`);
+        }
+    }
+    const updatedObject = Object.assign(Object.assign({}, dataObject[index]), updatedFields);
+    if (updatedFields.address) {
+        updatedObject.address = Object.assign(Object.assign({}, dataObject[index].address), updatedFields.address);
+    }
+    dataObject[index] = updatedObject;
+    yield fs_1.default.promises.writeFile(dataPath, JSON.stringify(dataObject, null, 2));
+    res.status(http_status_codes_1.StatusCodes.OK).json(dataObject[index]);
 });
 exports.updateData = updateData;
 const deleteData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {

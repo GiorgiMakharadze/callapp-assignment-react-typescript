@@ -6,6 +6,9 @@ import { notFoundMiddleware, errorHandlerMiddleware } from "./middleware/";
 const app = express();
 const port = process.env.PORT || 5000;
 
+//middleware
+app.use(express.json());
+
 //routes
 app.use("/api/v1/data", dataRoutes);
 

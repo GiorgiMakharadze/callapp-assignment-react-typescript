@@ -9,6 +9,8 @@ const dataRoutes_1 = __importDefault(require("./routes/dataRoutes"));
 const middleware_1 = require("./middleware/");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
+//middleware
+app.use(express_1.default.json());
 //routes
 app.use("/api/v1/data", dataRoutes_1.default);
 // error handling
