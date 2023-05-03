@@ -61,6 +61,15 @@ const updateData = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.updateData = updateData;
 const deleteData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    res.send("delete data");
+    const id = parseInt(req.params.id, 10);
+    const index = dataObject.findIndex((item) => item.id === id);
+    if (index === -1) {
+        throw new errors_1.NotFoundError(`Data with ID ${id} not found`);
+    }
+    dataObject.splice(index, 1);
+    yield fs_1.default.promises.writeFile(dataPath, JSON.stringify(dataObject, null, 2));
+    res
+        .status(http_status_codes_1.StatusCodes.OK)
+        .json({ msg: `Data with ID ${id} deleted successfully` });
 });
 exports.deleteData = deleteData;

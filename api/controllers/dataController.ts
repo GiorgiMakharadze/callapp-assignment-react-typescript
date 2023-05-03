@@ -68,7 +68,20 @@ const updateData = async (req: Request, res: Response) => {
 };
 
 const deleteData = async (req: Request, res: Response) => {
-  res.send("delete data");
+  const id = parseInt(req.params.id, 10);
+  const index = dataObject.findIndex((item: any) => item.id === id);
+
+  if (index === -1) {
+    throw new NotFoundError(`Data with ID ${id} not found`);
+  }
+
+  dataObject.splice(index, 1);
+
+  await fs.promises.writeFile(dataPath, JSON.stringify(dataObject, null, 2));
+
+  res
+    .status(StatusCodes.OK)
+    .json({ msg: `Data with ID ${id} deleted successfully` });
 };
 
 export { getAllData, updateData, deleteData };
