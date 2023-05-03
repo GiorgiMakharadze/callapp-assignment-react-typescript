@@ -5,20 +5,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 require("express-async-errors");
+const dataRoutes_1 = __importDefault(require("./routes/dataRoutes"));
+const middleware_1 = require("./middleware/");
 const app = (0, express_1.default)();
 const port = process.env.PORT || 5000;
-const dataPath = "./callapp-data.json";
-fs.readFile(dataPath, (err, data) => {
-    if (err) {
-        console.log(`Error reading file: ${dataPath}`, err);
-        process.exit(1);
-    }
-    const dataObject = JSON.parse(data.toString());
-    console.log(`Data loaded from ${dataPath}:`);
-    app.get("/api/v1/data", (req, res) => {
-        res.json(dataObject);
-    });
-});
+//routes
+app.use("/api/v1/data", dataRoutes_1.default);
+// error handling
+app.use(middleware_1.notFoundMiddleware);
+app.use(middleware_1.errorHandlerMiddleware);
 app.listen(port, () => {
     console.log(`Server is running on port: ${port}...`);
 });
