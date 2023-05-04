@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  createData,
   getAllData,
   updateData,
   deleteData,
@@ -7,7 +8,7 @@ import {
 
 const router = Router();
 
-router.route("/").get(getAllData);
+router.route("/").post(createData).get(getAllData);
 router.route("/:id").delete(deleteData).patch(updateData);
 
 export default router;

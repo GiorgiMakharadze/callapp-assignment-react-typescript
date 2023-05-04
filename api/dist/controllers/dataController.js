@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteData = exports.updateData = exports.getAllData = void 0;
+exports.deleteData = exports.updateData = exports.getAllData = exports.createData = void 0;
 const fs_1 = __importDefault(require("fs"));
 const http_status_codes_1 = require("http-status-codes");
 const errors_1 = require("../errors");
@@ -26,6 +26,51 @@ fs_1.default.readFile(dataPath, (err, data) => {
     dataObject = JSON.parse(data.toString());
     console.log(`Data loaded from ${dataPath}:`);
 });
+const createData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const newData = req.body;
+    if (!newData ||
+        !("name" in newData) ||
+        !("email" in newData) ||
+        !("gender" in newData) ||
+        !("address" in newData) ||
+        !("phone" in newData)) {
+        throw new Error("Invalid data format, Please provide correct values");
+    }
+    for (const key in newData) {
+        if (key === "address") {
+            if (!(newData[key] instanceof Object)) {
+                throw new TypeError("Address field should be an object with 'street' and 'city' properties");
+            }
+            if (!newData[key].street || !newData[key].city) {
+                throw new errors_1.EmptyValueError(`Value for 'street' and 'city' in address cannot be empty`);
+            }
+        }
+        else {
+            if (newData[key] === "") {
+                throw new errors_1.EmptyValueError(`Value for '${key}' cannot be empty`);
+            }
+        }
+    }
+    function generateRandomId(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+    const newId = generateRandomId(1000, 9999);
+    const newObject = {
+        id: newId,
+        name: newData.name,
+        email: newData.email,
+        gender: newData.gender,
+        address: {
+            street: newData.address.street,
+            city: newData.address.city,
+        },
+        phone: newData.phone,
+    };
+    dataObject.push(newObject);
+    yield fs_1.default.promises.writeFile(dataPath, JSON.stringify(dataObject, null, 2));
+    res.status(http_status_codes_1.StatusCodes.CREATED).json(newObject);
+});
+exports.createData = createData;
 const getAllData = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     if (!dataObject || dataObject.length <= 0) {
         throw new errors_1.NotFoundError("Data doesn't exist");
