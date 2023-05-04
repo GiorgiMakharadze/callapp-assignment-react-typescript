@@ -1,15 +1,56 @@
 import { useEffect, useState } from "react";
-import { Table, Tag, Typography } from "antd";
+import {
+  Table,
+  Tag,
+  Typography,
+  Popconfirm,
+  Button,
+  Space,
+  Form,
+  Input,
+  Modal,
+  Select,
+} from "antd";
+import Option from "antd/lib/select";
 import { PhoneOutlined, EnvironmentOutlined } from "@ant-design/icons";
 import useDataStore from "../store";
 import { IData } from "../../types/zustandTypes";
-import styles from "../../src/dataTable.module.scss";
+import styles from "../index.module.scss";
 
 const DataTable = () => {
-  const { data, fetchData } = useDataStore((state) => ({
+  const { data, fetchData, deleteData, updateData } = useDataStore((state) => ({
     data: state.data,
     fetchData: state.fetchData,
+    deleteData: state.deleteData,
+    updateData: state.updateData,
   }));
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [updatedData, setUpdatedData] = useState<IData | undefined>(undefined);
+  const [form] = Form.useForm();
+
+  const showModal = (record: IData) => {
+    form.setFieldsValue(record);
+    setIsModalOpen(true);
+  };
+
+  const handleOk = async (values: any) => {
+    try {
+      if (!updatedData) {
+        throw new Error("No data to update");
+      }
+      await updateData(Number(updatedData?.id) || 0, values);
+      setIsModalOpen(false);
+      console.log("Data updated successfully");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setUpdatedData(undefined);
+  };
 
   const [column, setColumn] = useState<Array<any>>([
     {
@@ -25,7 +66,7 @@ const DataTable = () => {
       title: "Name",
       dataIndex: "name",
       key: "name",
-
+      align: "center",
       render: (text: string) => <Typography.Text>{text}</Typography.Text>,
       sorter: (a: IData, b: IData) => a.name.localeCompare(b.name),
     },
@@ -33,6 +74,7 @@ const DataTable = () => {
       title: "Email",
       dataIndex: "email",
       key: "email",
+      align: "center",
       sorter: (a: IData, b: IData) => a.email.localeCompare(b.email),
       render: (text: string) => (
         <Typography.Text copyable>{text}</Typography.Text>
@@ -77,57 +119,104 @@ const DataTable = () => {
       ),
       align: "center",
     },
+    {
+      title: "Actions",
+      dataIndex: "action",
+      align: "center",
+      render: (_: any, record: any) => (
+        <Space>
+          <Popconfirm
+            title="Are you sure want to delete?"
+            onConfirm={() => deleteData(record.id)}
+          >
+            <Button danger type="primary">
+              Delete
+            </Button>
+          </Popconfirm>
+        </Space>
+      ),
+    },
   ]);
 
   useEffect(() => {
     fetchData();
   }, []);
 
-  const tableStyle = {
-    margin: "20px 20px",
-    maxWidth: "100%",
-  };
+  const rowClassName = () => styles.row;
+
   return (
-    <Table
-      columns={column}
-      dataSource={data}
-      pagination={{ pageSize: 9, showSizeChanger: true }}
-      style={tableStyle}
-    />
+    <div>
+      <Table
+        columns={column}
+        dataSource={data}
+        bordered
+        rowClassName={rowClassName}
+        onRow={(record) => ({
+          onDoubleClick: () => {
+            setUpdatedData(record);
+            showModal(record);
+          },
+        })}
+      />
+
+      <Modal
+        title="Basic Modal"
+        open={isModalOpen}
+        onOk={() => form.submit()}
+        onCancel={handleCancel}
+      >
+        <Form form={form} initialValues={updatedData} onFinish={handleOk}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input your name!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Gender"
+            name="gender"
+            rules={[{ required: true, message: "Please select a gender!" }]}
+          >
+            <Select>
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="City"
+            name={["address", "city"]}
+            rules={[{ required: true, message: "Please input your city!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Street"
+            name={["address", "street"]}
+            rules={[{ required: true, message: "Please input your street!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Phone"
+            name="phone"
+            rules={[
+              { required: true, message: "Please input your phone number!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+    </div>
   );
 };
 
 export default DataTable;
-// import React, { useState } from 'react';
-// import { Button, Modal } from 'antd';
-
-// const App: React.FC = () => {
-//   const [isModalOpen, setIsModalOpen] = useState(false);
-
-//   const showModal = () => {
-//     setIsModalOpen(true);
-//   };
-
-//   const handleOk = () => {
-//     setIsModalOpen(false);
-//   };
-
-//   const handleCancel = () => {
-//     setIsModalOpen(false);
-//   };
-
-//   return (
-//     <>
-//       <Button type="primary" onClick={showModal}>
-//         Open Modal
-//       </Button>
-//       <Modal title="Basic Modal" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
-//         <p>Some contents...</p>
-//         <p>Some contents...</p>
-//         <p>Some contents...</p>
-//       </Modal>
-//     </>
-//   );
-// };
-
-// export default App;

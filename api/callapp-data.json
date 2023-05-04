@@ -21,10 +21,9 @@
     },
     "phone": "+1 (927) 435-3074"
   },
-
   {
     "id": 3,
-    "name": "",
+    "name": "Carla Cain",
     "email": "carlacain@gology.com",
     "gender": "female",
     "address": {
