@@ -21,17 +21,7 @@
     },
     "phone": "+1 (927) 435-3074"
   },
-  {
-    "id": 2,
-    "name": "Melva Rogers",
-    "email": "melvarogers@gology.com",
-    "gender": "female",
-    "address": {
-      "street": "Gardner Avenue",
-      "city": "New York"
-    },
-    "phone": "+1 (927) 435-3074"
-  },
+
   {
     "id": 3,
     "name": "",
@@ -701,5 +691,16 @@
       "city": "New York"
     },
     "phone": "+1 (815) 425-3440"
+  },
+  {
+    "id": 64,
+    "name": "Melva Rogers",
+    "email": "melvarogers@gology.com",
+    "gender": "female",
+    "address": {
+      "street": "Gardner Avenue",
+      "city": "New York"
+    },
+    "phone": "+1 (927) 435-3074"
   }
 ]

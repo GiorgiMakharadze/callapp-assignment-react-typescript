@@ -5,6 +5,7 @@ import { IData, DataState } from "../types/zustandTypes";
 const dataFetch = axios.create({
   baseURL: `/api/v1`,
 });
+let url = `/data`;
 
 dataFetch.interceptors.response.use(
   (response) => {
@@ -25,7 +26,6 @@ const useDataStore = create<DataState>((set) => ({
   error: null,
 
   fetchData: async () => {
-    let url = `/data`;
     try {
       set({ loading: true });
       const response = await dataFetch.get(url);
@@ -39,7 +39,6 @@ const useDataStore = create<DataState>((set) => ({
   },
 
   createData: async (newData: IData) => {
-    let url = `/data`;
     try {
       set({ loading: true });
       const response = await dataFetch.post(url, newData);
@@ -55,7 +54,6 @@ const useDataStore = create<DataState>((set) => ({
   },
 
   updateData: async (id: number, updatedData: IData) => {
-    let url = `/data`;
     try {
       set({ loading: true });
       const response = await dataFetch.patch(`${url}/${id}`, updatedData);
@@ -73,7 +71,6 @@ const useDataStore = create<DataState>((set) => ({
   },
 
   deleteData: async (id: number) => {
-    let url = `/data`;
     try {
       set({ loading: true });
       await dataFetch.delete(`${url}/${id}`);
