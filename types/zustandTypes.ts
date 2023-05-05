@@ -10,12 +10,12 @@ export interface IData {
   phone: string;
 }
 
-export type DataState = {
-  data: readonly IData[] | undefined;
+export interface DataState {
+  data: ReadonlyArray<IData>;
   loading: boolean;
   error: string | null;
   fetchData: () => Promise<void>;
   createData: (newData: IData) => Promise<void>;
   updateData: (id: number, updatedData: IData) => Promise<void>;
   deleteData: (id: number) => Promise<void>;
-};
+}

@@ -12,26 +12,40 @@ import {
   Select,
 } from "antd";
 import Option from "antd/lib/select";
-import { PhoneOutlined, EnvironmentOutlined } from "@ant-design/icons";
+import {
+  PhoneOutlined,
+  EnvironmentOutlined,
+  MailOutlined,
+} from "@ant-design/icons";
 import useDataStore from "../store";
 import { IData } from "../../types/zustandTypes";
 import styles from "../index.module.scss";
 
 const DataTable = () => {
-  const { data, fetchData, deleteData, updateData } = useDataStore((state) => ({
-    data: state.data,
-    fetchData: state.fetchData,
-    deleteData: state.deleteData,
-    updateData: state.updateData,
-  }));
+  const { data, fetchData, createData, deleteData, updateData } = useDataStore(
+    (state) => ({
+      data: state.data,
+      fetchData: state.fetchData,
+      deleteData: state.deleteData,
+      updateData: state.updateData,
+      createData: state.createData,
+    })
+  );
 
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
+  const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [updatedData, setUpdatedData] = useState<IData | undefined>(undefined);
-  const [form] = Form.useForm();
+  const [updateForm] = Form.useForm();
+  const [addForm] = Form.useForm();
 
-  const showModal = (record: IData) => {
-    form.setFieldsValue(record);
-    setIsModalOpen(true);
+  const showUpdateModal = (record: IData) => {
+    updateForm.setFieldsValue(record);
+    setIsUpdateModalOpen(true);
+  };
+
+  const showAddModal = () => {
+    addForm.resetFields();
+    setIsAddModalOpen(true);
   };
 
   const handleOk = async (values: any) => {
@@ -40,7 +54,7 @@ const DataTable = () => {
         throw new Error("No data to update");
       }
       await updateData(Number(updatedData?.id) || 0, values);
-      setIsModalOpen(false);
+      setIsUpdateModalOpen(false);
       console.log("Data updated successfully");
     } catch (error) {
       console.log(error);
@@ -48,8 +62,22 @@ const DataTable = () => {
   };
 
   const handleCancel = () => {
-    setIsModalOpen(false);
+    setIsUpdateModalOpen(false);
     setUpdatedData(undefined);
+  };
+
+  const handleAddData = () => {
+    showAddModal();
+  };
+
+  const handleAddOk = async (values: any) => {
+    try {
+      await createData(values);
+      setIsAddModalOpen(false);
+      console.log("Data added successfully");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const [column, setColumn] = useState<Array<any>>([
@@ -67,7 +95,9 @@ const DataTable = () => {
       dataIndex: "name",
       key: "name",
       align: "center",
-      render: (text: string) => <Typography.Text>{text}</Typography.Text>,
+      render: (text: string) => (
+        <Typography.Text copyable>{text}</Typography.Text>
+      ),
       sorter: (a: IData, b: IData) => a.name.localeCompare(b.name),
     },
     {
@@ -77,7 +107,10 @@ const DataTable = () => {
       align: "center",
       sorter: (a: IData, b: IData) => a.email.localeCompare(b.email),
       render: (text: string) => (
-        <Typography.Text copyable>{text}</Typography.Text>
+        <Typography.Text>
+          <MailOutlined />{" "}
+          <a href={`mailto:${text}?subject=Subject%20Line`}>{text}</a>
+        </Typography.Text>
       ),
     },
     {
@@ -150,22 +183,86 @@ const DataTable = () => {
         columns={column}
         dataSource={data}
         bordered
+        pagination={{ pageSize: 9 }}
         rowClassName={rowClassName}
         onRow={(record) => ({
           onDoubleClick: () => {
             setUpdatedData(record);
-            showModal(record);
+            showUpdateModal(record);
           },
         })}
+        footer={() => (
+          <div style={{ display: "flex", justifyContent: "right" }}>
+            <Button type="primary" onClick={showAddModal}>
+              Add Data
+            </Button>
+          </div>
+        )}
       />
 
       <Modal
         title="Basic Modal"
-        open={isModalOpen}
-        onOk={() => form.submit()}
+        open={isUpdateModalOpen}
+        onOk={() => updateForm.submit()}
         onCancel={handleCancel}
       >
-        <Form form={form} initialValues={updatedData} onFinish={handleOk}>
+        <Form form={updateForm} initialValues={updatedData} onFinish={handleOk}>
+          <Form.Item
+            label="Name"
+            name="name"
+            rules={[{ required: true, message: "Please input your name!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Email"
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Gender"
+            name="gender"
+            rules={[{ required: true, message: "Please select a gender!" }]}
+          >
+            <Select>
+              <Option value="male">Male</Option>
+              <Option value="female">Female</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item
+            label="City"
+            name={["address", "city"]}
+            rules={[{ required: true, message: "Please input your city!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Street"
+            name={["address", "street"]}
+            rules={[{ required: true, message: "Please input your street!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Phone"
+            name="phone"
+            rules={[
+              { required: true, message: "Please input your phone number!" },
+            ]}
+          >
+            <Input />
+          </Form.Item>
+        </Form>
+      </Modal>
+      <Modal
+        title="Add Data"
+        visible={isAddModalOpen}
+        onOk={() => addForm.submit()}
+        onCancel={() => setIsAddModalOpen(false)}
+      >
+        <Form form={addForm} initialValues={updatedData} onFinish={handleAddOk}>
           <Form.Item
             label="Name"
             name="name"
