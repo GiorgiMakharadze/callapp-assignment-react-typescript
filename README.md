@@ -12,7 +12,7 @@ In this build, I used React Node.js, Express.js, TypeScript, Zustand, Ant Design
 
 ## How to install
 
-Download and run npm start.
+Download and run - npm run production-build then npm start.
 
 ## Features
 
