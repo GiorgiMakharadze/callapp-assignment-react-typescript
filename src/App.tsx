@@ -1,17 +1,35 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import DataTable from "./pages/DataTable";
-import PieChart from "./pages/PieChart";
+import React, { Suspense } from "react";
 import useDataStore from "./store";
+import Loading from "./components/Loading";
+
+const DataTable = React.lazy(() => import("./pages/DataTable"));
+const PieChart = React.lazy(() => import("./pages/PieChart"));
 
 function App() {
   const { data } = useDataStore((state: any) => ({
     data: state.data,
   }));
+
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<DataTable />} />
-        <Route path="/chart" element={<PieChart pieData={data} />} />
+        <Route
+          path="/"
+          element={
+            <Suspense fallback={<Loading />}>
+              <DataTable />
+            </Suspense>
+          }
+        />
+        <Route
+          path="/chart"
+          element={
+            <Suspense fallback={<Loading />}>
+              <PieChart pieData={data} />
+            </Suspense>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );

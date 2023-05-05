@@ -2,6 +2,8 @@ import { Form, Input, Modal, Select } from "antd";
 import { IAddModalProps } from "../../types/modalPropTyeps";
 import Option from "antd/lib/select";
 
+const emailRegex = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+
 const AddModal: React.FC<IAddModalProps> = ({
   isAddModalOpen,
   handleAddOk,
@@ -26,7 +28,21 @@ const AddModal: React.FC<IAddModalProps> = ({
         <Form.Item
           label="Email"
           name="email"
-          rules={[{ required: true, message: "Please input your email!" }]}
+          rules={[
+            { required: true, message: "Please input your email!" },
+            {
+              pattern: emailRegex,
+              message: "Please enter a valid email address!",
+            },
+            {
+              min: 25,
+              message: "Email must be at least 5 characters long!",
+            },
+            {
+              max: 50,
+              message: "Email must be at most 50 characters long!",
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -43,14 +59,34 @@ const AddModal: React.FC<IAddModalProps> = ({
         <Form.Item
           label="City"
           name={["address", "city"]}
-          rules={[{ required: true, message: "Please input your city!" }]}
+          rules={[
+            { required: true, message: "Please input your city!" },
+            {
+              min: 5,
+              message: "City must be at least 5 characters long!",
+            },
+            {
+              max: 50,
+              message: "City must be at most 50 characters long!",
+            },
+          ]}
         >
           <Input />
         </Form.Item>
         <Form.Item
           label="Street"
           name={["address", "street"]}
-          rules={[{ required: true, message: "Please input your street!" }]}
+          rules={[
+            { required: true, message: "Please input your street!" },
+            {
+              min: 5,
+              message: "Street must be at least 5 characters long!",
+            },
+            {
+              max: 100,
+              message: "Street must be at most 100 characters long!",
+            },
+          ]}
         >
           <Input />
         </Form.Item>
@@ -59,6 +95,7 @@ const AddModal: React.FC<IAddModalProps> = ({
           name="phone"
           rules={[
             { required: true, message: "Please input your phone number!" },
+            { pattern: /^[+0-9]*$/, message: "Please enter only numbers!" },
           ]}
         >
           <Input />

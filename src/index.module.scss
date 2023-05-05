@@ -22,13 +22,15 @@ code {
 // And design styles
 
 .row td {
-  border: 1px solid #ddd;
+  border: 0.5px solid #ddd;
 }
 
 .table_footer {
   display: flex;
   justify-content: right;
   gap: 10px;
+  border-top: 0.5px solid #ddd;
+  padding-top: 10px;
 }
 
 .pie_container {

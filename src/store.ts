@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import axios from "axios";
 import { IData, DataState } from "../types/zustandTypes";
+import HttpStatus from "http-status-codes";
 
 const dataFetch = axios.create({
   baseURL: `/api/v1`,
@@ -12,7 +13,7 @@ dataFetch.interceptors.response.use(
     return response;
   },
   (error) => {
-    if (error.response.status === 401) {
+    if (error.response.status === HttpStatus.UNAUTHORIZED) {
       console.log(error);
       return;
     }
@@ -32,7 +33,7 @@ const useDataStore = create<DataState>((set) => ({
 
       set({ data: response.data.dataObject, error: null });
     } catch (error: Error | any) {
-      set({ error: error.message });
+      set({ error: HttpStatus.getStatusText(error.response.status) });
     } finally {
       set({ loading: false });
     }
@@ -47,7 +48,7 @@ const useDataStore = create<DataState>((set) => ({
         error: null,
       }));
     } catch (error: Error | any) {
-      set({ error: error.message });
+      set({ error: HttpStatus.getStatusText(error.response.status) });
     } finally {
       set({ loading: false });
     }
@@ -64,7 +65,7 @@ const useDataStore = create<DataState>((set) => ({
         error: null,
       }));
     } catch (error: Error | any) {
-      set({ error: error.message });
+      set({ error: HttpStatus.getStatusText(error.response.status) });
     } finally {
       set({ loading: false });
     }
@@ -79,7 +80,7 @@ const useDataStore = create<DataState>((set) => ({
         error: null,
       }));
     } catch (error: Error | any) {
-      set({ error: error.message });
+      set({ error: HttpStatus.getStatusText(error.response.status) });
     } finally {
       set({ loading: false });
     }

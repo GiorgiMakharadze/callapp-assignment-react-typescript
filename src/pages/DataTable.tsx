@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Button, Form } from "antd";
+import { Table, Button, Form, message, Typography } from "antd";
 import useDataStore from "../store";
 import UpdateModal from "../components/UpdateModal";
 import AddModal from "../components/AddModal";
 import { IData } from "../../types/zustandTypes";
-import styles from "../index.module.scss";
 import { columns } from "../components/collumns";
+import styles from "../index.module.scss";
 
 const DataTable = () => {
   const { data, fetchData, createData, deleteData, updateData } = useDataStore(
@@ -19,6 +19,7 @@ const DataTable = () => {
     })
   );
 
+  const [currentPage, setCurrentPage] = useState<number>(1);
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [updatedData, setUpdatedData] = useState<IData | undefined>(undefined);
@@ -66,7 +67,12 @@ const DataTable = () => {
     try {
       await createData(values);
       setIsAddModalOpen(false);
-      console.log("Data added successfully");
+      message.success({
+        content: <Typography.Text>Data added successfully.</Typography.Text>,
+        duration: 5,
+      });
+      const lastPage = Math.ceil((data.length + 1) / 9);
+      setCurrentPage(lastPage);
     } catch (error) {
       console.log(error);
     }
@@ -81,12 +87,16 @@ const DataTable = () => {
   const rowClassName = () => styles.row;
 
   return (
-    <div>
+    <>
       <Table
         columns={column}
         dataSource={data}
         bordered
-        pagination={{ pageSize: 9 }}
+        pagination={{
+          current: currentPage,
+          pageSize: 9,
+          onChange: (page) => setCurrentPage(page),
+        }}
         rowClassName={rowClassName}
         onRow={(record) => ({
           onDoubleClick: () => {
@@ -118,7 +128,7 @@ const DataTable = () => {
         handleClose={() => setIsAddModalOpen(false)}
         addForm={addForm}
       />
-    </div>
+    </>
   );
 };
 
