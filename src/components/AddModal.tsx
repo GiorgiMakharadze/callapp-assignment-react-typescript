@@ -35,10 +35,6 @@ const AddModal: React.FC<IAddModalProps> = ({
               message: "Please enter a valid email address!",
             },
             {
-              min: 25,
-              message: "Email must be at least 5 characters long!",
-            },
-            {
               max: 50,
               message: "Email must be at most 50 characters long!",
             },
@@ -95,7 +91,7 @@ const AddModal: React.FC<IAddModalProps> = ({
           name="phone"
           rules={[
             { required: true, message: "Please input your phone number!" },
-            { pattern: /^[+0-9]*$/, message: "Please enter only numbers!" },
+            { pattern: /^[\d\s()+-]*$/, message: "Please enter only numbers!" },
           ]}
         >
           <Input />

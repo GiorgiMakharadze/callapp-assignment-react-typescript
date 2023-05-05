@@ -701,5 +701,16 @@
       "city": "New York"
     },
     "phone": "+1 (927) 435-3074"
+  },
+  {
+    "id": 65,
+    "name": "Giorgi Makharadzde",
+    "email": "makharadzegiorgi00@gmail.com",
+    "gender": "male",
+    "address": {
+      "street": "Ateni street 3",
+      "city": "Tbilisi"
+    },
+    "phone": "+995597567227"
   }
 ]

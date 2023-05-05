@@ -115,8 +115,6 @@ const DataTable = () => {
         bordered
         pagination={{
           current: currentPage,
-          pageSizeOptions: ["8", "10", "20", "50", "100"],
-          defaultPageSize: 8,
           showSizeChanger: true,
           showQuickJumper: true,
           className: `${styles["custom-pagination"]}`,
