@@ -1,1 +1,0 @@
-import { IData } from "./zustandTypes";
