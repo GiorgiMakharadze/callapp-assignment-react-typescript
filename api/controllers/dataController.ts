@@ -48,11 +48,8 @@ const createData = async (req: Request, res: Response) => {
     }
   }
 
-  function generateRandomId(min: number, max: number): number {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  const newId = generateRandomId(1000, 9999);
+  const lastItemId = dataObject[dataObject.length - 1].id;
+  const newId = lastItemId + 1;
 
   const newObject: IData = {
     id: newId,
