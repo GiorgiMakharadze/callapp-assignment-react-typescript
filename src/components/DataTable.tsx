@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Table,
   Tag,
@@ -37,8 +38,13 @@ const DataTable = () => {
   const [updatedData, setUpdatedData] = useState<IData | undefined>(undefined);
   const [updateForm] = Form.useForm();
   const [addForm] = Form.useForm();
+  const navigate = useNavigate();
 
-  const showUpdateModal = (record: IData) => {
+  const goToChart = () => {
+    navigate("/chart");
+  };
+
+  const showModal = (record: IData) => {
     updateForm.setFieldsValue(record);
     setIsUpdateModalOpen(true);
   };
@@ -173,7 +179,7 @@ const DataTable = () => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [fetchData]);
 
   const rowClassName = () => styles.row;
 
@@ -188,13 +194,16 @@ const DataTable = () => {
         onRow={(record) => ({
           onDoubleClick: () => {
             setUpdatedData(record);
-            showUpdateModal(record);
+            showModal(record);
           },
         })}
         footer={() => (
-          <div style={{ display: "flex", justifyContent: "right" }}>
+          <div className={styles.table_footer}>
             <Button type="primary" onClick={showAddModal}>
               Add Data
+            </Button>
+            <Button type="default" onClick={goToChart}>
+              Go to chart
             </Button>
           </div>
         )}

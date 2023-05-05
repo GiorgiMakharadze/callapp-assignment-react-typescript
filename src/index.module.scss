@@ -23,3 +23,9 @@ code {
 .row td {
   border: 1px solid #ddd;
 }
+
+.table_footer {
+  display: flex;
+  justify-content: right;
+  gap: 10px;
+}
