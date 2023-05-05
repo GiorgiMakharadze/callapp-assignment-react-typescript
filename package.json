@@ -27,11 +27,12 @@
     "zustand": "^4.3.7"
   },
   "scripts": {
-    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "setup-production": "npm install && npm run build && npm run install-server",
     "client": "react-scripts start",
-    "server": "cd api && npm start",
+    "install-server": "cd api && npm install",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "start": "cd api && npm start",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {

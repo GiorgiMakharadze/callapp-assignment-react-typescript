@@ -1,46 +1,73 @@
-# Getting Started with Create React App
+# Project Title
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## CallApp Data Management System
 
-## Available Scripts
+## Description
 
-In the project directory, you can run:
+This is a data management system built with React and Ant Design. It allows users to view, add, update, and delete data. The system also includes a pie chart that shows the percentage of people in each city.
 
-### `npm start`
+## Used Technologies
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
+In this build, I used React Node.js, Express.js, TypeScript, Zustand, Ant Design, Axios and etc.
 
-The page will reload if you make edits.\
-You will also see any lint errors in the console.
+## How to install
 
-### `npm test`
+Download and run npm start.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+## Features
 
-### `npm run build`
+### View Data
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The main page of the application displays a table of data. Users can search for specific data by entering name or email in the search bar. They can also sort the table by clicking on the column headers.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+### Add Data
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+To add new data, click on the "Add Data" button at the bottom of the table. This will open a modal where users can enter the details for the new data. Click "Ok" to add the data to the table.
 
-### `npm run eject`
+### Update Data
 
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
+To update existing data, double-click on the row for the data that needs to be updated. This will open a modal where users can make changes to the data. Click "Ok" to update the data.
 
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### Delete Data
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
+To delete data, click on the Delete button in the row for the data that needs to be deleted. This will prompt the user to confirm the deletion.
 
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
+### Pie Chart
 
-## Learn More
+The "Go to chart" button at the bottom of the table will take users to a page that displays a pie chart. The chart shows the percentage of people in each city.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+## API Reference
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### Get all data
+
+```http
+  GET /api/v1/data
+```
+
+### Create data
+
+```http
+  POST /api/v1/data
+```
+
+| Parameter | Type     | Description                                           |
+| :-------- | :------- | :---------------------------------------------------- |
+| `name`    | `string` | **Required**. Your name                               |
+| `email`   | `string` | **Required**. Your email                              |
+| `gender`  | `string` | **Required**. Your gender male or female              |
+| `address` | `string` | **Required**. Your need to write your street and city |
+| `phone`   | `string` | **Required**. Your your mobile phone number           |
+
+### Update data
+
+```http
+  UPDATE /api/v1/data/{id}
+```
+
+You can update any value
+
+### Delete data
+
+```http
+  DELETE /api/v1/data/{id}
+```
