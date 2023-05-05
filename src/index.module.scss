@@ -19,10 +19,18 @@ code {
     monospace;
 }
 
-// And design styles
-
 .row td {
   border: 0.5px solid #ddd;
+}
+
+.custom-pagination {
+  margin-right: 15px !important;
+
+  @media (max-width: 767px) {
+    & {
+      margin-right: 0 !important;
+    }
+  }
 }
 
 .table_footer {
@@ -31,6 +39,17 @@ code {
   gap: 10px;
   border-top: 0.5px solid #ddd;
   padding-top: 10px;
+}
+
+.search {
+  margin: 16px;
+}
+
+.search_input {
+  border: 1px solid #000;
+  &::placeholder {
+    color: #807d7d;
+  }
 }
 
 .pie_container {
@@ -44,9 +63,8 @@ code {
 .chart_container {
   width: 80%;
   height: 80%;
-  box-shadow: 20px 10px 0px -1px rgba(197, 197, 197, 0.58);
-  -webkit-box-shadow: 20px 10px 0px -1px rgba(197, 197, 197, 0.58);
-  -moz-box-shadow: 20px 10px 0px -1px rgba(197, 197, 197, 0.58);
+  border-top: 1.5px solid #ddd;
+  box-shadow: 16px 16px 10px 0px rgba(0, 0, 0, 0.4);
 }
 
 .title {

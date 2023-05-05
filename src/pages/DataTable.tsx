@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Table, Button, Form, message, Typography } from "antd";
+import { Table, Button, Form, message, Typography, Space, Input } from "antd";
 import useDataStore from "../store";
 import UpdateModal from "../components/UpdateModal";
 import AddModal from "../components/AddModal";
@@ -23,6 +23,7 @@ const DataTable = () => {
   const [isUpdateModalOpen, setIsUpdateModalOpen] = useState<boolean>(false);
   const [isAddModalOpen, setIsAddModalOpen] = useState<boolean>(false);
   const [updatedData, setUpdatedData] = useState<IData | undefined>(undefined);
+  const [searchValue, setSearchValue] = useState("");
   const [updateForm] = Form.useForm();
   const [addForm] = Form.useForm();
   const navigate = useNavigate();
@@ -48,7 +49,6 @@ const DataTable = () => {
       }
       await updateData(Number(updatedData?.id) || 0, values);
       setIsUpdateModalOpen(false);
-      console.log("Data updated successfully");
     } catch (error) {
       console.log(error);
     }
@@ -86,15 +86,40 @@ const DataTable = () => {
 
   const rowClassName = () => styles.row;
 
+  const filteredData = data.filter((record) => {
+    const searchRegex = new RegExp(searchValue, "i");
+    return searchRegex.test(record.name) || searchRegex.test(record.email);
+  });
+
   return (
     <>
+      <Space className={styles.search}>
+        <Input
+          placeholder="Enter search data"
+          className={styles.search_input}
+          onChange={(e) => setSearchValue(e.target.value)}
+          onInput={(e) => {
+            const regex = /^[a-zA-Z]*$/;
+            if (!regex.test(e.currentTarget.value)) {
+              e.currentTarget.value = e.currentTarget.value.replace(
+                /[^a-zA-Z]/g,
+                ""
+              );
+            }
+          }}
+        />
+      </Space>
       <Table
         columns={column}
-        dataSource={data}
+        dataSource={filteredData}
         bordered
         pagination={{
           current: currentPage,
-          pageSize: 9,
+          pageSizeOptions: ["8", "10", "20", "50", "100"],
+          defaultPageSize: 8,
+          showSizeChanger: true,
+          showQuickJumper: true,
+          className: `${styles["custom-pagination"]}`,
           onChange: (page) => setCurrentPage(page),
         }}
         rowClassName={rowClassName}
