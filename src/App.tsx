@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import Landing from "./pages/Landing";
-import PieChart from "./components/PieChart";
+import DataTable from "./pages/DataTable";
+import PieChart from "./pages/PieChart";
 import useDataStore from "./store";
 
 function App() {
@@ -10,8 +10,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Landing />} />
-        <Route path="/chart" element={<PieChart datas={data} />} />
+        <Route path="/" element={<DataTable />} />
+        <Route path="/chart" element={<PieChart pieData={data} />} />
       </Routes>
     </BrowserRouter>
   );
